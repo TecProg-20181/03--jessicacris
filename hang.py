@@ -34,7 +34,7 @@ def logSys(log, message):
 
 def validSecretWord(secretWord):
     if secretWord.__class__ is not str:
-        logSys('debug','Secret Word não é uma string')
+        logSys('debug','Secret Word not is string')
         sys.exit()
 
 #Function that draws the gallows and doll according to the number of errors.
@@ -114,7 +114,7 @@ def loadWords():
     print "Loading word list from file..."
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'read', 0)
-    logSys('info','Arquivo aberto com sucesso!')
+    logSys('info','File opened successfully!')
     # line: string
     line = inFile.readline()
     # wordlist: list of strings
@@ -211,7 +211,7 @@ def hangman(secretWord):
         hangman.hangman_man(guesses)
 
         if guesses == 0:
-            return
+            return ''
 
         show_available_letters(letters_guessed)
 
