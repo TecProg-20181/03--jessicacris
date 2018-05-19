@@ -2,8 +2,40 @@
 
 import random
 import string
+import logging
+import sys
 
 WORDLIST_FILENAME = "palavras.txt"
+
+def logSys(log, message):
+    logger = logging.getLogger('Logger Message')
+    logger.setLevel(logging.DEBUG)
+
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter('%(asctime)s -%(name)s - %(levelname)s - %(message)s ')
+
+    ch.setFormatter(formatter)
+
+    logger.addHandler(ch)
+
+    if log == 'debug':
+        logger.debug(message)
+
+    elif log == 'info':
+        logger.info(message)
+
+    elif log == 'warnning':
+        logger.warn(message)
+
+    else:
+        logger.error(message)
+
+def validSecretWord(secretWord):
+    if secretWord.__class__ is not str:
+        logSys('debug','Secret Word não é uma string')
+        sys.exit()
 
 #Function that draws the gallows and doll according to the number of errors.
 class Hangman():
@@ -82,6 +114,7 @@ def loadWords():
     print "Loading word list from file..."
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'read', 0)
+    logSys('info','Arquivo aberto com sucesso!')
     # line: string
     line = inFile.readline()
     # wordlist: list of strings
@@ -130,11 +163,11 @@ def validated_word (secretWord, guesses):
         print 'There are', unique_letters, 'unique Letters in this word'
 
         if guesses < unique_letters:
-            print 'The secret Word have too many unique letters, reloading the letters'
+            logSys('info','The secret Word have too many unique letters, reloading the letters, reloading')
             secretWord = loadWords()
             tries += 1
             if tries >= MAXIMUM_TRIES:
-                print'Maximum of tries, exiting program'
+                logSys('error','Max of tries, exiting program')
                 return None
         else:
             validated_word = True
@@ -162,7 +195,7 @@ def hangman(secretWord):
     secretWord = validated_word(secretWord, guesses)
 
     if secretWord == None:
-        return
+        return ''
 
     letters_guessed = []
 
@@ -183,6 +216,10 @@ def hangman(secretWord):
         show_available_letters(letters_guessed)
 
         letter = raw_input('Please guess a letter: ')
+
+        if letter.isdigit():
+            logSys('error','Not a letter')
+
         if letter in letters_guessed:
             guessed = ''
             guessed = guessed_letters(secretWord, letters_guessed)
@@ -202,7 +239,8 @@ def hangman(secretWord):
             guessed = ''
             guessed = guessed_letters(secretWord, letters_guessed)
 
-            print 'Oops! That letter is not in my word: ',  guessed
+            logSys('warnning', 'Oops! That letter is not in my word')
+            print guessed
         print '------------'
 
     else:
